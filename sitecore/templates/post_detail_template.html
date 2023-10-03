@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <h1 align="center" style="font-size:50px">{{ post.title }}</h1>
+  <h2>{{ post.content }}</h2>
+
+  {% if is_logged %}
+  <button> <a href="{{ post.id }}/reply/add"> Оставить отклик</a> </button>
+  {% endif %}
+
+  {% for reply in replys %}
+    {{ reply.content }}
+  {% endfor %}
+</body>
+</html>
