@@ -13,7 +13,14 @@
   {% endif %}
 
   {% for reply in replys %}
-    {{ reply.content }}
+    <ul>
+        <li><strong>{{ reply.author }}&nbsp;</strong></li>
+        <li><strong>{{ reply.date_posted }}</strong>
+        <ul>
+        <li><em>{{ reply.content }}</em></li>
+        </ul>
+        </li>
+    </ul>
   {% endfor %}
 </body>
 </html>

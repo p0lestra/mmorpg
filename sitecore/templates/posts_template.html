@@ -6,14 +6,15 @@
 </head>
 <body>
     {% if is_logged %}
-    <button align="center"> <a href="{% url 'postcreate' %}"> Опубликовать обьявление</a> </button>
+    <button> <a href="{% url 'postcreate' %}"> Опубликовать обьявление</a> </button>
+    <button><a href="{% url 'replies' %}">Мои отклики</a></button>
     {% endif %}
     {% if posts %}
-    <table>
+    <table align="center" cellspacing=10>
            <tr>
-               <td>Название</td>
-               <td>Категория</td>
-               <td>Содержание</td>
+               <td style="font-size:20px"><b>Название</b></td>
+               <td style="font-size:20px"><b>Категория</b></td>
+               <td style="font-size:20px"><b>Содержание</b></td>
            </tr>
 
            {% for post in posts %}
@@ -25,6 +26,11 @@
                    {% endfor %}
                </td>
                <td>{{ post.content|truncatewords:20}}</td>
+               <td>
+               {% if user == post.post_author %}
+                   <button><a href="{{ post.id }}/edit">Редактировать</a></button>
+               {% endif %}
+               </td>
            </tr>
            {% endfor %}
 

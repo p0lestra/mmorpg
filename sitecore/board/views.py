@@ -1,5 +1,5 @@
-from django.shortcuts import get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView
+from django.shortcuts import get_object_or_404, redirect
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from board.forms import PostForm, ReplyForm
 from board.models import Post, Reply
@@ -13,6 +13,7 @@ class PostsList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['is_logged'] = self.request.user.is_authenticated
+        context['current_user'] = self.request.user
         return context
 
 
@@ -23,9 +24,9 @@ class PostDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_logged'] = self.request.user.is_authenticated
         replies_by_post_id = Reply.objects.filter(post=self.kwargs['pk']).order_by('-date_posted')
-        
+        context['is_logged'] = self.request.user.is_authenticated
+        context['replys'] = replies_by_post_id
         return context
 
 
@@ -43,6 +44,18 @@ class PostCreate(CreateView):
         return super().form_valid(form)
 
 
+class PostEdit(UpdateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'post_edit.html'
+    context_object_name = 'post_edit'
+    success_url = '/posts/'
+
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('pk')
+        return Post.objects.get(pk=id)
+
+
 class ReplyAdd(CreateView):
     form_class = ReplyForm
     model = Reply
@@ -57,5 +70,16 @@ class ReplyAdd(CreateView):
         reply.author = self.request.user
         reply.post = get_object_or_404(Post, id=self.kwargs['pk'])
         form.save()
+        return redirect('post', reply.post.pk)
 
-        return super().form_valid(form)
+
+class Replies(ListView):
+    model = Reply
+    template_name = 'replies.html'
+    context_object_name = 'replies'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        replies_to_author = Reply.objects.filter(self.post.post_author =)
+        context['replies_to_author'] = replies_to_author
+        return context
