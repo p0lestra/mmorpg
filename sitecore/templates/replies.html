@@ -7,7 +7,14 @@
 <body>
     {% if replies_to_author %}
         {% for reply in replies_to_author %}
-            {{reply.content}}
+        <ul>
+            <li><strong>{{ reply.author }} {{ reply.date_posted }}&nbsp;</strong></li>
+            <li><strong>Обьявление: <a href="{% url 'post' reply.post.id %}">{{ reply.post }}</a></strong>
+            <ul>
+            <li><em>{{ reply.content }}</em></li>
+            </ul>
+            </li>
+        </ul>
         {% endfor %}
     {% endif %}
 </body>

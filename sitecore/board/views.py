@@ -80,6 +80,14 @@ class Replies(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        replies_to_author = Reply.objects.filter(self.post.post_author =)
+        replies_to_author = Reply.objects.filter(post__post_author=self.request.user)
         context['replies_to_author'] = replies_to_author
         return context
+
+
+def delete_reply(self, request, pk):
+    reply = Reply.objects.get(id=pk)
+    post = Post.objects.get(id=reply.post.pk)
+    if request.user == reply.author or request.user == post.post_author:
+        reply.delete()
+    return redirect('/posts/')

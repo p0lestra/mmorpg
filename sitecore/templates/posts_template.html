@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Posts</title>
 </head>
 <body>
     {% if is_logged %}
@@ -10,7 +10,7 @@
     <button><a href="{% url 'replies' %}">Мои отклики</a></button>
     {% endif %}
     {% if posts %}
-    <table align="center" cellspacing=10>
+    <table align="center" cellspacing=20>
            <tr>
                <td style="font-size:20px"><b>Название</b></td>
                <td style="font-size:20px"><b>Категория</b></td>
