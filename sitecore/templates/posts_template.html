@@ -29,6 +29,7 @@
                <td>
                {% if user == post.post_author %}
                    <button><a href="{{ post.id }}/edit">Редактировать</a></button>
+                   <button><a href="{{ post.id }}/delete">Удалить</a></button>
                {% endif %}
                </td>
            </tr>

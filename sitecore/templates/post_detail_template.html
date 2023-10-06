@@ -20,8 +20,11 @@
   {% for reply in replys %}
     <ul>
         <li><strong>{{ reply.author }}
-        {% if reply.post.post_author == request.user || reply.author == request.user %}
+        {% if reply.post.post_author == request.user or reply.author == request.user %}
             <button><a href="{% url 'delete_reply' reply.id %}">Удалить</a></button>
+        {% endif %}
+        {% if reply.post.post_author == request.user and not reply.is_allowed %}
+            <button><a href="{% url 'allow_reply' reply.id %}">Принять</a></button>
         {% endif %}
         </strong></li>
         <li><strong>{{ reply.date_posted }}</strong>

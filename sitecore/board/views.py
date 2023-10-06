@@ -85,9 +85,19 @@ class Replies(ListView):
         return context
 
 
-def delete_reply(self, request, pk):
+def delete_reply(self, pk):
     reply = Reply.objects.get(id=pk)
-    post = Post.objects.get(id=reply.post.pk)
-    if request.user == reply.author or request.user == post.post_author:
-        reply.delete()
+    reply.delete()
+    return redirect('/posts/')  # FIXME сделать переход на страницу отклика
+
+
+def allow_reply(self, pk):
+    reply = Reply.objects.get(id=pk)
+    reply.is_allowed = True
+    return redirect('/posts/')  # FIXME попробовать переход на пост
+
+
+def delete_post(self, pk):
+    post = Post.objects.get(id=pk)
+    post.delete()
     return redirect('/posts/')

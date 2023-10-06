@@ -26,7 +26,7 @@ class Reply(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
-    is_allowed = models.BooleanField(default=0)
+    is_allowed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.author.username + ', ' + self.post.title
