@@ -29,4 +29,4 @@ def send_email(reply, title, template, subscribers_email):
 @receiver(post_save, sender=Reply)
 def new_reply(sender, instance, **kwargs):
     if kwargs['created']:
-        send_email(instance.content, f'Новый отклик на ваше обьявление({instance.post.title})', 'reply_sendmail_author.html', [instance.author.email])
+        send_email(instance.content, f'Новый отклик на ваше обьявление({instance.title})', 'reply_sendmail_author.html', [instance.post.post_author.email])
