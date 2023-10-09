@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'board',
+    'board.apps.BoardConfig',
+    'members',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +124,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'p0lestra'
+EMAIL_HOST_PASSWORD = 'xzrrpubdpxhbpkdi'
+EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = 'p0lestra@yandex.ru'
+
+EMAIL_SERVER = EMAIL_HOST_USER
+EMAIL_ADMIN = EMAIL_HOST_USER

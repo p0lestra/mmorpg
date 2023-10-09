@@ -25,6 +25,8 @@
         {% endif %}
         {% if reply.post.post_author == request.user and not reply.is_allowed %}
             <button><a href="{% url 'allow_reply' reply.id %}">Принять</a></button>
+        {% elif reply.post.post_author == request.user and reply.is_allowed %}
+            (ПРИНЯТО)
         {% endif %}
         </strong></li>
         <li><strong>{{ reply.date_posted }}</strong>

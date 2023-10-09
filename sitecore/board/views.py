@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
+from board.filters import PostFilter
 from board.forms import PostForm, ReplyForm
 from board.models import Post, Reply
 
@@ -80,8 +81,8 @@ class Replies(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        replies_to_author = Reply.objects.filter(post__post_author=self.request.user)
-        context['replies_to_author'] = replies_to_author
+        queryset = Reply.objects.filter(post__post_author_id=self.request.user.pk).order_by('-date_posted')
+        context['filter'] = PostFilter(self.request.GET, queryset, request=self.request.user.pk)
         return context
 
 
@@ -91,9 +92,11 @@ def delete_reply(self, pk):
     return redirect('/posts/')  # FIXME сделать переход на страницу отклика
 
 
-def allow_reply(self, pk):
+def allow_reply(request, pk):
     reply = Reply.objects.get(id=pk)
     reply.is_allowed = True
+    
+    reply.save()
     return redirect('/posts/')  # FIXME попробовать переход на пост
 
 

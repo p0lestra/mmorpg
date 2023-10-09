@@ -8,6 +8,10 @@
     {% if is_logged %}
     <button> <a href="{% url 'postcreate' %}"> Опубликовать обьявление</a> </button>
     <button><a href="{% url 'replies' %}">Мои отклики</a></button>
+    <button><a href="{% url 'logout' %}">Выйти</a></button>
+    <p>Здравствуйте, {{ user.username }}</p>
+    {% else %}
+    <button><a href="{% url 'login' %}">Войти</a></button>
     {% endif %}
     {% if posts %}
     <table align="center" cellspacing=20>
@@ -25,7 +29,7 @@
                    {{ cat }}
                    {% endfor %}
                </td>
-               <td>{{ post.content|truncatewords:20}}</td>
+               <td>{{ post.content|truncatewords:10}}</td>
                <td>
                {% if user == post.post_author %}
                    <button><a href="{{ post.id }}/edit">Редактировать</a></button>
