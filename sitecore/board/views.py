@@ -1,9 +1,13 @@
-from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.models import User
+from django.core.mail import EmailMultiAlternatives
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from board.filters import PostFilter
-from board.forms import PostForm, ReplyForm
+from board.forms import PostForm, ReplyForm, SendForm
 from board.models import Post, Reply
+from sitecore import settings
 
 
 class PostsList(ListView):
@@ -15,6 +19,7 @@ class PostsList(ListView):
         context = super().get_context_data(**kwargs)
         context['is_logged'] = self.request.user.is_authenticated
         context['current_user'] = self.request.user
+        context['user_is_staff'] = self.request.user.is_staff
         return context
 
 
@@ -86,6 +91,39 @@ class Replies(ListView):
         return context
 
 
+def news_send(request):
+    if request.method == 'GET':
+        form = SendForm()
+        return render(request, 'send_mails.html', {'form': form})
+    else:
+        form = SendForm(request.POST)
+        if form.is_valid():
+            content_mail = form.cleaned_data.get('content')
+            recievers = []
+            for user in User.objects.all():
+                if user.email != ' ' or user.email != '':
+                    recievers.append(user.email)
+
+            html_mail = render_to_string(
+                'send_mails_mail.html',
+                {
+                    'text': content_mail,
+                }
+            )
+
+            message = EmailMultiAlternatives(
+                subject=f'Новость!',
+                body='',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=recievers
+            )
+
+            message.attach_alternative(html_mail, 'text/html')
+            message.send()
+
+            return redirect('/posts/')
+
+
 def delete_reply(self, pk):
     reply = Reply.objects.get(id=pk)
     reply.delete()
@@ -95,7 +133,24 @@ def delete_reply(self, pk):
 def allow_reply(request, pk):
     reply = Reply.objects.get(id=pk)
     reply.is_allowed = True
-    
+    html_mail = render_to_string(
+        'reply_sendmail_accepted.html',
+        {
+            'text': reply.content,
+            'post_title': reply.post.title,
+            'post_link': f'http://127.0.0.1:8000/posts/{reply.post.pk}',
+        }
+    )
+
+    message = EmailMultiAlternatives(
+        subject=f'Ваш отклик был принят',
+        body='',
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[reply.author.email]
+    )
+
+    message.attach_alternative(html_mail, 'text/html')
+    message.send()
     reply.save()
     return redirect('/posts/')  # FIXME попробовать переход на пост
 

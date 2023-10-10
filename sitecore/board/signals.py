@@ -32,9 +32,3 @@ def new_reply(sender, instance, **kwargs):
         send_email(instance.content, f'Новый отклик на ваше обьявление({instance.post.title})',
                    'reply_sendmail_author.html', [instance.post.post_author.email])
 
-
-@receiver(post_save, sender=Reply)
-def reply_accepted(sender, instance, **kwargs):
-    if kwargs['update_fields'] == {'is_allowed'}:
-        send_email(instance.content, f'Ваш отклик был принят. Обьявление {instance.post.title}',
-                   'reply_sendmail_accepted.html', [instance.author.email])
